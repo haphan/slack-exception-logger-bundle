@@ -95,7 +95,7 @@ class ExceptionHandler
 
             $message = array(
                 'channel' => '#' . $config['channel'],
-                'text' => $className . ' thrown in ' . $this->getName(),
+                'text' => sprintf('`%s` thrown in `%s`', $className, $this->getName()),
                 'attachments' => array(
                     array(
                         'fallback'=> $text,
@@ -106,6 +106,10 @@ class ExceptionHandler
                             array(
                                 'title' => 'Message',
                                 'value' => $text,
+                            ),
+                            array(
+                                'title' => 'File',
+                                'value' => sprintf('%s:%s', $file, $line),
                             ),
                             array(
                                 'title' => 'System',
@@ -125,16 +129,6 @@ class ExceptionHandler
                             array(
                                 'title' => 'Environment',
                                 'value' => $this->environment,
-                                'short' => 1,
-                            ),
-                            array(
-                                'title' => 'File',
-                                'value' => $file,
-                                'short' => 1,
-                            ),
-                            array(
-                                'title' => 'Line',
-                                'value' => $line,
                                 'short' => 1,
                             ),
                         ),
@@ -325,7 +319,7 @@ class ExceptionHandler
      */
     public function onConsoleException(ConsoleErrorEvent $event)
     {
-        $exception = $event->getException();
+        $exception = $event->getError();
 
         if ($this->shouldProcessException($exception)) {
             $this->postToSlack($exception);
