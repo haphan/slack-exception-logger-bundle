@@ -1,4 +1,4 @@
-#Slack Exception Logger Bundle for Symfony2
+# Slack Exception Logger Bundle for Symfony2
 
 This bundle allows exceptions thrown in a symfony2 app to be logged automatically to a [Slack](https://slack.com) channel.
 

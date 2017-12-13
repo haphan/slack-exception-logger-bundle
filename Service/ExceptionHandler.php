@@ -7,6 +7,7 @@
 namespace Dopiaza\Slack\ExceptionLoggerBundle\Service;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionHandler
@@ -218,11 +219,10 @@ class ExceptionHandler
         {
             if (array_key_exists('exclude_exception', $config))
             {
-                $className = get_class($exception);
                 $excludeList = $config['exclude_exception'];
                 foreach ($excludeList as $exclude)
                 {
-                    if ($exclude == $className)
+                    if ($exception instanceof $exclude)
                     {
                         $shouldProcess = false;
                         break;
@@ -316,5 +316,21 @@ class ExceptionHandler
     public function setEnvironmentConfigurations($environmentConfigurations)
     {
         $this->environmentConfigurations = $environmentConfigurations;
+    }
+
+    /**
+     * Handles console exception
+     *
+     * @param ConsoleErrorEvent $event
+     */
+    public function onConsoleException(ConsoleErrorEvent $event)
+    {
+        $exception = $event->getException();
+
+        if ($this->shouldProcessException($exception)) {
+            $this->postToSlack($exception);
+        }
+
+        return;
     }
 }

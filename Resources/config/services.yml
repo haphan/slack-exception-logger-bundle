@@ -1,9 +1,9 @@
 services:
-
-    dopiaza_slack_exception_logger.listener:
-        class: Dopiaza\Slack\ExceptionLoggerBundle\Service\ExceptionHandler
-        arguments:
-            - "@logger"
-            - "%kernel.environment%"
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+  dopiaza_slack_exception_logger.listener:
+    class: Dopiaza\Slack\ExceptionLoggerBundle\Service\ExceptionHandler
+    arguments:
+      - "@logger"
+      - "%kernel.environment%"
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+      - { name: kernel.event_listener, event: console.error, method: onConsoleException }
